@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title> Map</title>
+	<meta charset="utf-8">
+	<link rel="stylesheet" type="text/css" href="asset/leaflet/leaflet.css">
+	<script src="asset/leaflet/leaflet.js"></script>
+	<script src="json/kawo.js"></script>
+	<style>
+		html, body {
+			height: 100%;
+			width: 100%;
+			margin:0;
+			padding: 0;
+		}
+		#map {
+			width: 100%;
+			height:100%;
+		}
+	</style>
+</head>
+<body>
+</head>
+<body>
+<div id="map"></div>
+
+<script>
+	var masjid = L.layerGroup();
+	L.marker([-8.7824148, 116.3092348]).bindPopup('Masjid Jami At Taqwa').addTo(masjid),
+	L.marker([-8.764983, 116.301506]).bindPopup('Masjid Nurul Yaqin')
+		.addTo(masjid);
+	
+	var sekolah = L.layerGroup();
+	L.marker([-8.7765705, 116.3091473]).bindPopup('MA Al-Masyudien NW ').addTo(sekolah),
+	L.marker([-8.775711, 116.308543]).bindPopup('SMA Al-Masyudien NW ').addTo(sekolah),
+	L.marker([-8.788859, 116.307238]).bindPopup('SMP N 2 PUJUT ').addTo(sekolah);
+
+	var pasar = L.layerGroup();
+	L.marker([-8.7796623, 116.3105344]).bindPopup('BK Mart').addTo(pasar),
+	L.marker([-8.7868308, 116.3074464]).bindPopup('Alfamart').addTo(pasar),
+	L.marker([-8.7857239, 116.3088981]).bindPopup('Kios Ebhien').addTo(pasar);
+	L.marker([-8.7800746, 116.306047]).bindPopup('Dafad Storr').addTo(pasar);
+
+	var kesehatan = L.layerGroup();
+	L.marker([-8.7830823, 116.3092403]).bindPopup('Poskesdes').addTo(kesehatan);
+
+	var mbAttr = 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, ' +
+			'<a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, ' +
+			'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+		mbUrl = 'https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw';
+
+	var streets  = L.tileLayer(mbUrl, {id: 'mapbox.streets',   attribution: mbAttr}),
+		grayscale   = L.tileLayer(mbUrl, {id: 'mapbox.light', attribution: mbAttr});
+
+	var map = L.map('map', {
+		center: [-8.7918, 116.2956],
+		zoom: 13,
+		layers: [streets, masjid, pasar]
+	});
+
+	var baseLayers = {
+		"Streets": streets,
+		"Grayscale": grayscale		
+	};
+
+	var overlays = {
+		"Masjid": masjid,
+		"sekolah":sekolah,
+		"Pasar" : pasar,
+		"kesehatan": kesehatan
+	};
+
+	L.control.layers(baseLayers, overlays).addTo(map);
+
+	L.geoJSON([kawo], {
+		style: function (feature) {
+			return feature.properties && feature.properties.style;
+		}
+	}).addTo(map);
+</script>
+</body>
+</html>
